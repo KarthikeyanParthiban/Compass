@@ -240,7 +240,7 @@ def _monthly_bars(paths, current_value, horizon_years):
     return df_bars.replace({np.nan: None}).to_dict('records')
 
 
-def get_management_data(profile_id='current', num_sims=5000, days=1260, confidence_level=95):
+def get_management_data(profile_id='current', num_sims=1000, days=1260, confidence_level=95):
     # 1. Select profile
     profile = STRATEGY_PROFILES.get(profile_id, STRATEGY_PROFILES['sample'])
     if profile_id == 'sample':
