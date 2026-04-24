@@ -13,6 +13,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+async def root():
+    return {"status": "online", "message": "Portfolio Compass API is running. Visit /docs for API documentation."}
+
 @app.get("/profiles")
 async def list_profiles():
     return {"status": "success", "data": get_available_profiles()}
