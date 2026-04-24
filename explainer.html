@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Compass | Technical Explainer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg: #09090b;
+            --card: #18181b;
+            --blue: #3b82f6;
+            --green: #22c55e;
+            --red: #ef4444;
+            --text-dim: #a1a1aa;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: #fff;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        .glass {
+            background: rgba(24, 24, 27, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glow {
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.15);
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float { animation: float 5s ease-in-out infinite; }
+        .path-line {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw 2s ease-out forwards;
+        }
+        @keyframes draw {
+            to { stroke-dashoffset: 0; }
+        }
+        .fan-line {
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 0.1; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 glass border-b border-white/5 py-4 px-8 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="bg-blue-600 p-1.5 rounded-lg">
+                <i data-lucide="compass" class="w-5 h-5"></i>
+            </div>
+            <span class="font-bold text-lg tracking-tight">Portfolio Compass</span>
+        </div>
+        <div class="hidden md:flex gap-8 text-sm font-medium text-zinc-400">
+            <a href="#logic" class="hover:text-white transition-colors">The Logic</a>
+            <a href="#visuals" class="hover:text-white transition-colors">The Visuals</a>
+            <a href="#benefits" class="hover:text-white transition-colors">Business Value</a>
+        </div>
+        <button class="bg-white text-black px-4 py-2 rounded-full text-xs font-bold hover:bg-zinc-200 transition-all">
+            Download PDF
+        </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-40 pb-20 px-8 relative overflow-hidden">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[120px] -z-10"></div>
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="inline-block px-3 py-1 bg-blue-500/10 text-blue-400 text-[10px] font-extrabold tracking-widest uppercase rounded-full mb-6 border border-blue-500/20">
+                Management Briefing
+            </div>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-8 leading-[1.1] tracking-tighter">
+                Visualizing Risk, <br/><span class="text-zinc-500">Not Just Returns.</span>
+            </h1>
+            <p class="text-zinc-400 text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed">
+                An executive summary of the Portfolio Compass: A high-fidelity predictive engine that replaces static estimates with dynamic, probability-based simulations.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#logic" class="bg-blue-600 hover:bg-blue-500 px-8 py-4 rounded-2xl font-bold transition-all flex items-center gap-2 group">
+                    Explore the Engine
+                    <i data-lucide="arrow-down" class="w-4 h-4 group-hover:translate-y-1 transition-transform"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Logic Section -->
+    <section id="logic" class="py-24 px-8 border-t border-white/5">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold mb-6">The Multi-Variant Engine</h2>
+                    <p class="text-zinc-400 mb-8 leading-relaxed">
+                        Markets don't move in isolation. The Portfolio Compass uses advanced <strong>Multivariate Monte Carlo</strong> simulations to model how your specific assets interact under pressure.
+                    </p>
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="history" class="text-blue-400 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold mb-1">5-Year Historical Context</h3>
+                                <p class="text-sm text-zinc-500">Every simulation is grounded in 60 months of historical price data, capturing multiple market regimes.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="layers" class="text-green-400 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold mb-1">5,000 Parallel Journeys</h3>
+                                <p class="text-sm text-zinc-500">Instead of one "best guess," we run 5,000 independent futures to find the true statistical range of outcomes.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="users" class="text-purple-400 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold mb-1">The "Team Effect" (Correlation)</h3>
+                                <p class="text-sm text-zinc-500">We use Cholesky decomposition to ensure assets move together according to their natural correlations.</p>
+                            </div>
+                        </div>
+                    <div style="margin-bottom: 10px">
+                        <strong style="color: #fff">The Rationale</strong><br />
+                        Markets don't move in straight lines. We use <em>Monte Carlo</em> math to run 5,000 random market scenarios based on historical risk, giving you a realistic probability map instead of a blind guess.
+                    </div>
+                </div>
+                <div class="glass p-8 rounded-[32px] glow relative overflow-hidden h-[400px]">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-20">
+                        <svg width="400" height="300" viewBox="0 0 400 300" class="overflow-visible">
+                            <!-- Paths Fan -->
+                            <g id="fan-lines">
+                                <!-- Generated by script below -->
+                            </g>
+                            <!-- Highlight Lines -->
+                            <path d="M0,200 Q100,120 400,50" stroke="#22c55e" stroke-width="4" fill="none" class="path-line" style="animation-delay: 0.5s;"/>
+                            <path d="M0,200 Q100,180 400,120" stroke="#3b82f6" stroke-width="4" fill="none" class="path-line" style="animation-delay: 0.2s;"/>
+                            <path d="M0,200 Q100,220 400,240" stroke="#ef4444" stroke-width="4" fill="none" class="path-line" style="animation-delay: 0.8s;"/>
+                        </svg>
+                    </div>
+                    <div class="absolute bottom-8 left-8 right-8">
+                        <div class="bg-black/60 backdrop-blur-md p-4 rounded-xl border border-white/5">
+                            <div class="text-[10px] uppercase tracking-widest text-zinc-500 font-bold mb-2">Simulated Out-of-Sample Test</div>
+                            <div class="text-sm font-medium">Model Reliability: <span class="text-green-400">92.4%</span></div>
+                            <div class="w-full bg-white/5 h-1.5 rounded-full mt-2 overflow-hidden">
+                                <div class="bg-blue-600 h-full w-[92%]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Start to Finish Journey -->
+    <section class="py-24 px-8 border-t border-white/5">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-4xl font-bold mb-16 text-center tracking-tight">The Data Pipeline: <span class="text-blue-500">Start to Finish</span></h2>
+            <div class="grid md:grid-cols-3 gap-12 relative">
+                <!-- Connectors for Desktop -->
+                <div class="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent -translate-y-1/2 -z-10"></div>
+                
+                <!-- Step 1 -->
+                <div class="glass p-8 rounded-3xl relative">
+                    <div class="absolute -top-4 -left-4 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-bold text-lg">1</div>
+                    <i data-lucide="download-cloud" class="w-8 h-8 text-blue-400 mb-6"></i>
+                    <h3 class="text-xl font-bold mb-3">Live Ingestion</h3>
+                    <p class="text-sm text-zinc-500 leading-relaxed">
+                        The engine securely fetches your live holdings from <strong>Groww</strong> and pulls 5 years (1,260 days) of adjusted close prices from <strong>Yahoo Finance</strong>.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="glass p-8 rounded-3xl relative">
+                    <div class="absolute -top-4 -left-4 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-bold text-lg">2</div>
+                    <i data-lucide="calculator" class="w-8 h-8 text-purple-400 mb-6"></i>
+                    <h3 class="text-xl font-bold mb-3">Volatility Mapping</h3>
+                    <p class="text-sm text-zinc-500 leading-relaxed">
+                        We calculate daily log returns and build a <strong>Covariance Matrix</strong>. This maps how volatile each stock is and how they move in relation to one another.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="glass p-8 rounded-3xl relative">
+                    <div class="absolute -top-4 -left-4 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-bold text-lg">3</div>
+                    <i data-lucide="fingerprint" class="w-8 h-8 text-green-400 mb-6"></i>
+                    <h3 class="text-xl font-bold mb-3">Cholesky Sync</h3>
+                    <p class="text-sm text-zinc-500 leading-relaxed">
+                        We decompose the matrix into a "Cholesky Factor." This ensures that random shocks in the simulation respect the real-world correlations of your portfolio.
+                    </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="glass p-8 rounded-3xl relative">
+                    <div class="absolute -top-4 -left-4 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-bold text-lg">4</div>
+                    <i data-lucide="cpu" class="w-8 h-8 text-red-400 mb-6"></i>
+                    <h3 class="text-xl font-bold mb-3">5,000 Iterations</h3>
+                    <p class="text-sm text-zinc-500 leading-relaxed">
+                        The engine uses a <strong>Student's T-Distribution</strong> to run 5,000 simulations. This specifically accounts for "Fat Tails"—the rare but severe market crashes that standard models ignore.
+                    </p>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="glass p-8 rounded-3xl relative">
+                    <div class="absolute -top-4 -left-4 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-bold text-lg">5</div>
+                    <i data-lucide="sigma" class="text-yellow-400 w-8 h-8 mb-6"></i>
+                    <h3 class="text-xl font-bold mb-3">Statistical Distillation</h3>
+                    <p class="text-sm text-zinc-500 leading-relaxed">
+                        We compound all 5,000 paths over 5 years. We then extract the <strong>15th, 50th, and 85th percentiles</strong> to find your Bear, Base, and Bull cases.
+                    </p>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="glass p-8 rounded-3xl relative">
+                    <div class="absolute -top-4 -left-4 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-bold text-lg">6</div>
+                    <i data-lucide="layout" class="w-8 h-8 text-blue-500 mb-6"></i>
+                    <h3 class="text-xl font-bold mb-3">Monthly UI Mapping</h3>
+                    <p class="text-sm text-zinc-500 leading-relaxed">
+                        Finally, a smoothing algorithm is applied to the paths, and key <strong>milestones (12M, 36M, 60M)</strong> are flagged for the final mobile-first dashboard.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visual Breakdown Section -->
+    <section id="visuals" class="py-24 px-8 bg-zinc-900/30">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-16">How to Interpret the Compass</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="p-8 rounded-3xl bg-zinc-800/50 border border-white/5 hover:border-red-500/30 transition-all">
+                    <div class="text-red-400 font-bold mb-4 flex items-center justify-center gap-2">
+                        <i data-lucide="trending-down" class="w-5 h-5"></i>
+                        Bear Case
+                    </div>
+                    <p class="text-xs text-zinc-400">Represents the 15th percentile—an "unfavorable" but realistic market slowdown or correction.</p>
+                </div>
+                <div class="p-8 rounded-3xl bg-zinc-800/50 border border-white/5 hover:border-blue-500/30 transition-all scale-110 glow shadow-xl">
+                    <div class="text-blue-400 font-bold mb-4 flex items-center justify-center gap-2">
+                        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                        Base Case
+                    </div>
+                    <p class="text-xs text-zinc-400">The 50th percentile (median). This is the most statistically likely trajectory based on current fundamentals.</p>
+                </div>
+                <div class="p-8 rounded-3xl bg-zinc-800/50 border border-white/5 hover:border-green-500/30 transition-all">
+                    <div class="text-green-400 font-bold mb-4 flex items-center justify-center gap-2">
+                        <i data-lucide="trending-up" class="w-5 h-5"></i>
+                        Bull Case
+                    </div>
+                    <p class="text-xs text-zinc-400">The 85th percentile. Represents strong equity rallies and optimistic economic conditions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Business Value Section -->
+    <section id="benefits" class="py-24 px-8">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">Strategic Business Value</h2>
+                <p class="text-zinc-500">Why Portfolio Compass is the future of client-facing analytics.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="p-6 rounded-2xl glass hover:bg-zinc-800 transition-colors">
+                    <i data-lucide="shield-check" class="text-blue-400 w-8 h-8 mb-4"></i>
+                    <h4 class="font-bold mb-2 text-sm">Risk Transparency</h4>
+                    <p class="text-xs text-zinc-500">Builds client trust by showing worst-case scenarios alongside growth targets.</p>
+                </div>
+                <div class="p-6 rounded-2xl glass hover:bg-zinc-800 transition-colors">
+                    <i data-lucide="zap" class="text-yellow-400 w-8 h-8 mb-4"></i>
+                    <h4 class="font-bold mb-2 text-sm">Real-Time Updating</h4>
+                    <p class="text-xs text-zinc-500">Adjust portfolio weights and see the impact on probability instantly.</p>
+                </div>
+                <div class="p-6 rounded-2xl glass hover:bg-zinc-800 transition-colors">
+                    <i data-lucide="scale" class="text-green-400 w-8 h-8 mb-4"></i>
+                    <h4 class="font-bold mb-2 text-sm">Mathematical Integrity</h4>
+                    <p class="text-xs text-zinc-500">Moves beyond "linear CAGR" to capture fat-tail risks and volatility shocks.</p>
+                </div>
+                <div class="p-6 rounded-2xl glass hover:bg-zinc-800 transition-colors">
+                    <i data-lucide="target" class="text-red-400 w-8 h-8 mb-4"></i>
+                    <h4 class="font-bold mb-2 text-sm">Goal Tracking</h4>
+                    <p class="text-xs text-zinc-500">Enables high-conviction retirement and long-term planning.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5 text-center text-zinc-600 text-sm">
+        <p>&copy; 2026 Portfolio Compass Analytics. All rights reserved.</p>
+        <p class="mt-2">Confidential & Proprietary. For management review only.</p>
+    </footer>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Generate Fan Lines
+        const fanGroup = document.getElementById('fan-lines');
+        for(let i=0; i<30; i++) {
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            const spread = (Math.random() - 0.5) * 150;
+            const bend = (Math.random() - 0.5) * 100;
+            path.setAttribute("d", `M0,200 Q${100+bend},${150+bend} 400,${150+spread}`);
+            path.setAttribute("stroke", "white");
+            path.setAttribute("stroke-width", "0.5");
+            path.setAttribute("fill", "none");
+            path.classList.add("fan-line");
+            path.style.animationDelay = `${Math.random() * 2}s`;
+            fanGroup.appendChild(path);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.env.*
+
+# Cache folders (don't deploy cached data)
+price_cache/
+sim_cache/
+
+# Raw data files (private)
+output.json
+output_utf8.json
+*.parquet
+
+# Frontend build artifacts
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+*.swp
