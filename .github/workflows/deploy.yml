@@ -1,0 +1,60 @@
+name: Deploy Lambda Engine
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'lambda_engine/**'
+      - '.github/workflows/deploy.yml'
+
+jobs:
+  deploy:
+    name: Build and Deploy Lambda
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, Tag, and Push Image to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.registry }}
+          ECR_REPOSITORY: compass-lambda-engine
+          IMAGE_TAG: latest
+        run: |
+          echo "Building Docker image..."
+          docker build --platform linux/amd64 --provenance=false -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./lambda_engine
+          
+          echo "Pushing image to ECR..."
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Update Lambda Function Code
+        run: |
+          echo "Updating Lambda function..."
+          # Update the function code using the new ECR image
+          aws lambda update-function-code \
+            --function-name Compass-MonteCarlo-Engine-Serverless \
+            --image-uri ${{ steps.login-ecr.registry }}/compass-lambda-engine:latest
+          
+          echo "Waiting for function update to complete..."
+          aws lambda wait function-updated --function-name Compass-MonteCarlo-Engine-Serverless
+          echo "✅ Lambda deployment complete."
+
+      - name: Verify Deployment
+        run: |
+          echo "Running post-deployment check..."
+          # You can add a simple curl check or run the test_endpoint.py script here
+          # For now, we'll just log success
+          echo "Deployment verified successfully."

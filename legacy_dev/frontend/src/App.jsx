@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   LineChart, Line, XAxis, YAxis, ReferenceLine,
   ResponsiveContainer, Tooltip, AreaChart, Area
@@ -6,7 +6,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Home, Briefcase, Search, Bell, User, Compass,
-  TrendingUp, Signal, Wifi, Battery, Info, ChevronDown, BarChart2, ArrowLeft
+  TrendingUp, Signal, Wifi, Battery, Info, ChevronDown, BarChart2, ArrowLeft, Brain
 } from 'lucide-react';
 import './App.css';
 
@@ -366,6 +366,234 @@ const HoldingSkel = () => (
   </div>
 );
 
+/* ─── AI HEALTH SCORE CARD ─── */
+const SCORE_COLORS = {
+  A: '#34c759', B: '#007aff', C: '#ff9500', D: '#ff6b00', F: '#ff3b30'
+};
+const BAR_COLORS = [
+  '#007aff',   // diversification
+  '#34c759',   // momentum
+  '#af52de',   // risk_adjusted
+  '#ff9500',   // growth_potential
+];
+const BAR_LABELS = [
+  { key: 'diversification', label: 'Diversification' },
+  { key: 'momentum',        label: 'Momentum' },
+  { key: 'risk_adjusted',   label: 'Risk-Adjusted' },
+  { key: 'growth_potential',label: 'Growth Potential' },
+];
+
+function ScoreDial({ score, grade }) {
+  const r      = 42;
+  const circ   = 2 * Math.PI * r;  // ≈ 263.9
+  const offset = circ - (score / 100) * circ;
+  const color  = SCORE_COLORS[grade] || '#ff9500';
+  const dialRef = useRef(null);
+
+  useEffect(() => {
+    if (!dialRef.current) return;
+    dialRef.current.style.transition = 'none';
+    dialRef.current.style.strokeDashoffset = circ;
+    // Trigger reflow so the transition resets
+    void dialRef.current.getBoundingClientRect();
+    dialRef.current.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(0.4,0,0.2,1)';
+    dialRef.current.style.strokeDashoffset = offset;
+  }, [score, offset, circ]);
+
+  return (
+    <div className="health-dial-wrap">
+      <svg width="100" height="100" viewBox="0 0 100 100">
+        {/* Track */}
+        <circle cx="50" cy="50" r={r} fill="none" stroke="#f2f2f7" strokeWidth="8" />
+        {/* Progress */}
+        <circle
+          ref={dialRef}
+          cx="50" cy="50" r={r}
+          fill="none"
+          stroke={color}
+          strokeWidth="8"
+          strokeLinecap="round"
+          strokeDasharray={circ}
+          strokeDashoffset={circ}
+          style={{ filter: `drop-shadow(0 0 6px ${color}55)` }}
+        />
+      </svg>
+      <div className="health-dial-inner">
+        <div className="health-dial-score" style={{ color }}>{score}</div>
+        <div className="health-dial-label">/ 100</div>
+      </div>
+    </div>
+  );
+}
+
+function AIHealthScoreCard({ profileId }) {
+  const [data,    setData]    = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error,   setError]   = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    let isActive = true;
+    let timedOut = false;
+    const timeoutId = setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, 15000);
+
+    setLoading(true);
+    setError(null);
+    setData(null);
+
+    fetch(`${API}/health-score?profile_id=${profileId}&days=1260&iterations=1000`, {
+      signal: controller.signal,
+    })
+      .then(r => r.json())
+      .then(j => {
+        if (j.status === 'success') {
+          setData(j.data);
+        } else {
+          setData(null);
+          setError(j.message || 'Unknown error');
+        }
+      })
+      .catch(e => {
+        if (e.name !== 'AbortError') {
+          setData(null);
+          setError(e.message);
+        } else if (timedOut) {
+          setData(null);
+          setError('AI health score timed out. Please try again.');
+        }
+      })
+      .finally(() => {
+        clearTimeout(timeoutId);
+        if (isActive) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isActive = false;
+      clearTimeout(timeoutId);
+      controller.abort();
+    };
+  }, [profileId]);
+
+  const grade = data?.grade || 'C';
+  const subs  = data?.sub_scores || {};
+  const narrative = data?.narrative || {};
+
+  return (
+    <motion.div
+      className="health-card"
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.28, type: 'spring', damping: 22 }}
+    >
+      {/* Header */}
+      <div className="health-card-header">
+        <div className="health-title-group">
+          <div className="health-icon-wrap">
+            <Brain size={18} color="#fff" />
+          </div>
+          <div>
+            <div className="health-title">AI Health Score</div>
+            <div className="health-subtitle">Powered by NVIDIA NIM · Llama 3.1 70B</div>
+          </div>
+        </div>
+        {data && (
+          <div className={`health-grade-badge ${grade}`}>{grade}</div>
+        )}
+      </div>
+
+      {/* Loading state */}
+      {loading && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 4 }}>
+            <Skel w={100} h={100} r={50} />
+            <div style={{ flex: 1 }}>
+              <Skel h={14} w="80%" style={{ marginBottom: 8 }} />
+              <Skel h={11} w="95%" style={{ marginBottom: 6 }} />
+              <Skel h={11} w="70%" />
+            </div>
+          </div>
+          {[1,2,3,4].map(i => (
+            <div key={i}>
+              <Skel h={10} w="60%" style={{ marginBottom: 5 }} />
+              <Skel h={6} r={100} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Error state */}
+      {!loading && error && (
+        <div style={{ fontSize: 12, color: 'var(--red)', padding: '12px 0', lineHeight: 1.5 }}>
+          ⚠️ {error}
+        </div>
+      )}
+
+      {/* Data */}
+      {!loading && data && (
+        <>
+          {/* Dial + headline */}
+          <div className="health-dial-row">
+            <ScoreDial score={data.overall_score} grade={grade} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div className="health-headline">{narrative.headline || 'Portfolio analysis ready'}</div>
+              <div className="health-summary">{narrative.summary}</div>
+            </div>
+          </div>
+
+          {/* Sub-score bars */}
+          <div className="health-bars">
+            {BAR_LABELS.map(({ key, label }, i) => {
+              const sub = subs[key] || {};
+              const pct = sub.score ?? 0;
+              const barColor = BAR_COLORS[i];
+              return (
+                <div key={key} className="health-bar-row">
+                  <div className="health-bar-meta">
+                    <span>{label}</span>
+                    <span style={{ color: barColor, fontWeight: 700 }}>{pct}<span style={{ fontWeight: 500, color: 'var(--text3)', fontSize: 10 }}>/100</span> · {sub.label}</span>
+                  </div>
+                  <div className="health-bar-track">
+                    <div className="health-bar-fill" style={{ width: `${pct}%`, background: barColor }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Narrative pills */}
+          <div className="health-insight-row">
+            <div className="health-insight-pill">
+              <div className="health-pill-label" style={{ color: '#ff3b30' }}>⚠ Top Risk</div>
+              <div className="health-pill-text">{narrative.top_risk || '—'}</div>
+            </div>
+            <div className="health-insight-pill">
+              <div className="health-pill-label" style={{ color: '#34c759' }}>✦ Opportunity</div>
+              <div className="health-pill-text">{narrative.top_opportunity || '—'}</div>
+            </div>
+          </div>
+
+          {/* Action */}
+          <div className="health-action-box">
+            <div className="health-action-label">🎯 AI Recommendation</div>
+            {narrative.action || 'No action needed at this time.'}
+          </div>
+
+          {/* AI badge */}
+          <div className="health-ai-badge">
+            <div className="health-ai-dot" />
+            AI · NVIDIA NIM · {data.key_present ? 'Live' : 'Demo Mode'}
+          </div>
+        </>
+      )}
+    </motion.div>
+  );
+}
+
 /* ─── APP ─── */
 export default function App() {
   const [allData, setAllData] = useState(() => {
@@ -379,37 +607,50 @@ export default function App() {
   const [profileId, setProfileId] = useState('sample');
 
   useEffect(() => {
-    const fetchAll = async () => {
-      // If we have cached data, we can stop loading early for the current profile
-      if (allData[profileId]) setLoading(false);
-
-      const updateData = (id, data) => {
-        setAllData(prev => {
-          const next = { ...prev, [id]: data };
-          localStorage.setItem('portfolio_cache', JSON.stringify(next));
-          return next;
-        });
-      };
-
-      // Fetch each profile and update state immediately
-      PROFILES.forEach(p => {
-        fetch(`${API}/simulate?profile_id=${p.id}&days=1260&iterations=5000`)
-          .then(r => r.json())
-          .then(j => {
-            if (j.status === 'success') {
-              updateData(p.id, j.data);
-              if (p.id === profileId) setLoading(false);
-            }
-          })
-          .catch(err => {
-            console.error(`Error loading ${p.id}:`, err);
-            if (p.id === profileId) setLoading(false);
-          });
+    const updateData = (id, data) => {
+      setAllData(prev => {
+        const next = { ...prev, [id]: data };
+        localStorage.setItem('portfolio_cache', JSON.stringify(next));
+        return next;
       });
     };
 
-    fetchAll();
+    PROFILES.forEach(p => {
+      fetch(`${API}/simulate?profile_id=${p.id}&days=1260&iterations=5000`)
+        .then(r => r.json())
+        .then(j => {
+          if (j.status === 'success') {
+            updateData(p.id, j.data);
+          }
+        })
+        .catch(err => {
+          console.error(`Error loading ${p.id}:`, err);
+        });
+    });
   }, []); // Run once on mount
+
+  useEffect(() => {
+    setLoading(!allData[profileId]);
+  }, [profileId, allData]);
+
+  useEffect(() => {
+    if (allData[profileId]) return;
+
+    fetch(`${API}/simulate?profile_id=${profileId}&days=1260&iterations=5000`)
+      .then(r => r.json())
+      .then(j => {
+        if (j.status === 'success') {
+          setAllData(prev => {
+            const next = { ...prev, [profileId]: j.data };
+            localStorage.setItem('portfolio_cache', JSON.stringify(next));
+            return next;
+          });
+        }
+      })
+      .catch(err => {
+        console.error(`Error loading ${profileId}:`, err);
+      });
+  }, [profileId, allData]);
 
   const data = useMemo(() => allData[profileId], [allData, profileId]);
   const holdingsList = useMemo(() => data?.holdings || [], [data]);
@@ -507,6 +748,9 @@ export default function App() {
           data={data}
           loading={loading}
         />
+
+        {/* ── AI HEALTH SCORE ── */}
+        <AIHealthScoreCard profileId={profileId} />
 
         {/* Holdings header */}
         <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr 1fr', padding: '0 4px', marginBottom: 4 }}>
